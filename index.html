@@ -172,8 +172,8 @@
         /* Estructuras - círculos elegantes */
         .structure {
             position: absolute;
-            width: 70px;
-            height: 70px;
+            width: clamp(30px, 8vw, 70px);
+            height: clamp(30px, 8vw, 70px);
             background: radial-gradient(circle, rgba(240, 165, 0, 0.9), rgba(200, 120, 0, 0.85));
             border: 2px solid #ffdd99;
             border-radius: 50%;
@@ -182,7 +182,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            font-size: 10px;
+            font-size: clamp(5px, 1.8vw, 10px);
             font-weight: 800;
             color: #1a1f2e;
             backdrop-filter: blur(4px);
@@ -217,13 +217,13 @@
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(8px);
             color: #ffdd99;
-            font-size: 10px;
+            font-size: clamp(6px, 1.5vw, 9px);
             font-weight: 600;
             border-radius: 12px;
-            padding: 8px 10px;
+            padding: clamp(2px, 0.8vw, 8px);
             white-space: normal;
             word-break: break-word;
-            max-width: 100px;
+            max-width: clamp(60px, 20vw, 100px);
             border: 2px solid #f0a500;
             border-left: 4px solid #ffdd99;
             pointer-events: none;
@@ -235,6 +235,37 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+        }
+
+        /* Tabs header */
+        .tabs-header {
+            display: none;
+            gap: 0;
+            margin-bottom: 16px;
+            background: rgba(42, 47, 63, 0.6);
+            border-radius: 40px;
+            padding: 4px;
+            border: 1px solid rgba(240, 165, 0, 0.2);
+        }
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 8px 16px;
+            border-radius: 36px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #f0a500, #e08900);
+            color: #0a0f1c;
+        }
+        .tab-btn:hover:not(.active) {
+            color: #f0a500;
         }
 
         /* Sidebar elegante */
@@ -252,6 +283,16 @@
             padding: 24px;
             overflow-y: auto;
             box-shadow: -8px 0 30px rgba(0,0,0,0.5);
+        }
+        .sidebar.sidebar-sustitutos {
+            left: -400px;
+            right: auto;
+            border-left: none;
+            border-right: 2px solid #f0a500;
+            box-shadow: 8px 0 30px rgba(0,0,0,0.5);
+        }
+        .sidebar.sidebar-sustitutos.open {
+            left: 0;
         }
         .sidebar.open {
             right: 0;
@@ -427,17 +468,39 @@
             }
         }
 
+        /* Responsive tablet (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .tabs-header {
+                display: flex;
+            }
+            .sidebar {
+                width: 100%;
+                right: -100%;
+                border-left: none;
+                border-top: 2px solid #f0a500;
+                border-radius: 32px 32px 0 0;
+            }
+            .sidebar.sidebar-sustitutos {
+                left: -100%;
+                right: auto;
+                border-right: none;
+                border-top: 2px solid #f0a500;
+            }
+            .sidebar.sidebar-sustitutos.open {
+                left: auto;
+                right: 0;
+            }
+        }
+
         /* Responsive móvil */
         @media (max-width: 768px) {
             body { padding: 12px; }
             .header { padding: 12px 16px; }
             h1 { font-size: 1.2rem; }
             .btn, select { padding: 6px 12px; font-size: 0.75rem; }
-            .structure { width: 48px; height: 48px; font-size: 7px; }
-            .assigned-names { font-size: 8px; padding: 3px 8px; white-space: normal; max-width: 90px; line-height: 1.2; }
-            .sidebar { width: 100%; right: -100%; }
             .player-name { font-size: 0.8rem; }
             .player-power { font-size: 0.7rem; }
+            .tabs-header { display: flex; }
         }
     </style>
 </head>
@@ -465,8 +528,14 @@
     </div>
 </div>
 
-<!-- Sidebar -->
-<div id="sidebar" class="sidebar">
+<!-- Tabs para seleccionar vista -->
+<div class="tabs-header" id="tabsHeader">
+    <button class="tab-btn active" data-tab="titulares">⚔️ TITULARES</button>
+    <button class="tab-btn" data-tab="sustitutos">🔄 SUSTITUTOS</button>
+</div>
+
+<!-- Sidebar Titulares -->
+<div id="sidebarTitulares" class="sidebar">
     <div class="sidebar-header">
         <h3>⚔️ GUERREROS</h3>
         <button class="close-sidebar" id="closeSidebar">✕ CERRAR</button>
@@ -475,17 +544,33 @@
     <div id="playerList" class="player-list"></div>
 </div>
 
+<!-- Sidebar Sustitutos -->
+<div id="sidebarSustitutos" class="sidebar sidebar-sustitutos">
+    <div class="sidebar-header">
+        <h3>🔄 SUSTITUTOS</h3>
+        <button class="close-sidebar" id="closeSidebarSustitutos">✕ CERRAR</button>
+    </div>
+    <div style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid rgba(240, 165, 0, 0.2);">
+        <h4 style="color: #ffdd99; font-size: 0.85rem; margin-bottom: 10px;">➕ Agregar Sustitutos</h4>
+        <input type="text" id="addSubstitutesSearch" class="search-input" placeholder="🔍 Buscar jugador..." style="margin-bottom: 10px;">
+        <div id="addSubstitutesList" class="player-list" style="max-height: 300px; overflow-y: auto;"></div>
+    </div>
+    <h4 style="color: #ffdd99; font-size: 0.85rem; margin-bottom: 10px;">📋 Sustitutos Asignados</h4>
+    <div id="substitutesList" class="player-list"></div>
+</div>
+
 <!-- Modal -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">Asignar jugadores</h3>
+        <input type="text" id="modalSearch" class="search-input" placeholder="🔍 Buscar jugador...">
         <div id="modalPlayersList"></div>
         <button class="btn" id="closeModal" style="margin-top: 20px; width: 100%;">CERRAR</button>
     </div>
 </div>
 
 <script>
-    // ==================== DATOS DE JUGADORES ====================
+    // ==================== DATOS DE JUGADORES Y SUSTITUTOS ====================
     const jugadoresRaw = [
         "gabiota30,98.1M", "Jay Dennise,120.8M", "enoc2,118.6M", "Dasstas,110.2M", "eqqui7,106.8M",
         "Kandi1619,103.1M", "bobafitness,100.5M", "AugustoAlonzo,99.6M", "BrebisGaleuse,95.5M", "Alaroña19,89.9M",
@@ -510,6 +595,9 @@
         return { nombre: nombre.trim(), poder: poder, estado: "Activo" };
     });
 
+    // Array vacío para sustitutos (usuario los asignará después)
+    let sustitutos = [];
+
     // ==================== ESTRUCTURAS (AJUSTA POSICIONES AQUÍ) ====================
     // Cada estructura ahora tiene: namesTop y namesLeft para posicionar los cuadros de nombres
     // Usa porcentajes relativos al contenedor del mapa
@@ -528,6 +616,7 @@
     ];
 
     let asignaciones = {};
+    let asignacionesSustitutos = {};
 
     function cargarAsignaciones() {
         const guardado = localStorage.getItem("tormenta_asignaciones");
@@ -536,10 +625,18 @@
         } else {
             estructuras.forEach(e => { asignaciones[e.id] = []; });
         }
+
+        const guardadoSustitutos = localStorage.getItem("tormenta_asignaciones_sustitutos");
+        if (guardadoSustitutos) {
+            asignacionesSustitutos = JSON.parse(guardadoSustitutos);
+        } else {
+            asignacionesSustitutos = { sustitutos: [] };
+        }
     }
 
     function guardarAsignaciones() {
         localStorage.setItem("tormenta_asignaciones", JSON.stringify(asignaciones));
+        localStorage.setItem("tormenta_asignaciones_sustitutos", JSON.stringify(asignacionesSustitutos));
     }
 
     function renderizarMapa() {
@@ -632,10 +729,12 @@
     }
 
     let modalEstructuraActual = null;
+    let modalJugadoresFiltrados = [];
     
     function abrirModal(estructuraId, nombreEstructura) {
         modalEstructuraActual = estructuraId;
         document.getElementById("modalTitle").innerHTML = `📌 ${nombreEstructura}`;
+        document.getElementById("modalSearch").value = "";
         
         const asignadosActuales = new Set(asignaciones[estructuraId] || []);
         const filter = document.getElementById("filterStatus").value;
@@ -644,10 +743,24 @@
             jugadoresFiltrados = jugadores.filter(j => j.estado === "Activo");
         }
         
+        modalJugadoresFiltrados = jugadoresFiltrados;
+        renderizarModalJugadores(asignadosActuales);
+        
+        document.getElementById("modal").style.display = "flex";
+    }
+    
+    function renderizarModalJugadores(asignadosActuales) {
+        const search = document.getElementById("modalSearch").value.toLowerCase();
+        let jugadoresMostrados = modalJugadoresFiltrados;
+        
+        if (search) {
+            jugadoresMostrados = jugadoresMostrados.filter(j => j.nombre.toLowerCase().includes(search));
+        }
+        
         const container = document.getElementById("modalPlayersList");
         container.innerHTML = "";
         
-        jugadoresFiltrados.forEach(j => {
+        jugadoresMostrados.forEach(j => {
             const div = document.createElement("div");
             div.className = "modal-player";
             const cb = document.createElement("input");
@@ -655,11 +768,11 @@
             cb.checked = asignadosActuales.has(j.nombre);
             cb.onchange = (e) => {
                 if (e.target.checked) {
-                    if (!asignaciones[estructuraId].includes(j.nombre)) {
-                        asignaciones[estructuraId].push(j.nombre);
+                    if (!asignaciones[modalEstructuraActual].includes(j.nombre)) {
+                        asignaciones[modalEstructuraActual].push(j.nombre);
                     }
                 } else {
-                    asignaciones[estructuraId] = asignaciones[estructuraId].filter(n => n !== j.nombre);
+                    asignaciones[modalEstructuraActual] = asignaciones[modalEstructuraActual].filter(n => n !== j.nombre);
                 }
                 guardarAsignaciones();
                 renderizarMapa();
@@ -670,12 +783,45 @@
             div.appendChild(span);
             container.appendChild(div);
         });
-        
-        document.getElementById("modal").style.display = "flex";
     }
     
     async function exportarImagen() {
-        const mapContainer = document.querySelector(".map-container");
+        const mapContainer = document.querySelector(".map-wrapper");
+        const sustitutos = asignacionesSustitutos.sustitutos || [];
+        
+        // Crear tabla de sustitutos temporalmente
+        const tempTable = document.createElement("div");
+        tempTable.id = "temp-export-table";
+        tempTable.style.cssText = `
+            background: rgba(26, 31, 46, 0.98);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(240, 165, 0, 0.4);
+        `;
+        
+        let tableHTML = `
+            <h3 style="color: #ffdd99; text-align: center; margin-bottom: 16px; font-size: 1.2rem;">🔄 SUSTITUTOS</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; color: #eef2ff;">
+        `;
+        
+        if (sustitutos.length === 0) {
+            tableHTML += `<div style="grid-column: 1/-1; text-align: center; color: #999;">Sin sustitutos asignados</div>`;
+        } else {
+            sustitutos.forEach(s => {
+                tableHTML += `
+                    <div style="padding: 8px; border: 1px solid rgba(240, 165, 0, 0.3); border-radius: 8px; font-size: 0.85rem;">
+                        <strong>${s.nombre}</strong><br/>
+                        <span style="color: #ffaa44;">⚡${s.poder}</span>
+                    </div>
+                `;
+            });
+        }
+        
+        tableHTML += `</div>`;
+        tempTable.innerHTML = tableHTML;
+        mapContainer.appendChild(tempTable);
+        
         try {
             const canvas = await html2canvas(mapContainer, {
                 scale: 2,
@@ -691,6 +837,9 @@
         } catch (err) {
             console.error(err);
             mostrarToast("❌ Error al exportar");
+        } finally {
+            // Remover tabla temporal
+            tempTable.remove();
         }
     }
     
@@ -704,13 +853,23 @@
     
     function resetearAsignaciones() {
         estructuras.forEach(e => { asignaciones[e.id] = []; });
+        asignacionesSustitutos.sustitutos = [];
         guardarAsignaciones();
         renderizarMapa();
+        actualizarListaSustitutos();
         mostrarToast("🗑️ Todas las asignaciones fueron reiniciadas");
     }
     
     function mostrarSidebar() {
-        document.getElementById("sidebar").classList.add("open");
+        const windowWidth = window.innerWidth;
+        if (windowWidth > 1024) {
+            // Desktop: ambos sidebars visibles
+            document.getElementById("sidebarTitulares").classList.add("open");
+            document.getElementById("sidebarSustitutos").classList.add("open");
+        } else {
+            // Mobile/Tablet: mostrar tab de titulares
+            mostrarTab('titulares');
+        }
         actualizarListaJugadores();
     }
     
@@ -733,31 +892,179 @@
             </div>
         `).join("");
     }
+
+    function actualizarListaSustitutos() {
+        // Sección de agregar sustitutos (búsqueda de jugadores disponibles)
+        const searchAdd = document.getElementById("addSubstitutesSearch").value.toLowerCase();
+        const sustitutosActuales = asignacionesSustitutos.sustitutos || [];
+        
+        // Filtrar jugadores que NO sean sustitutos ya asignados
+        let jugadoresDisponibles = jugadores.filter(j => 
+            !sustitutosActuales.some(s => s.nombre === j.nombre)
+        );
+        
+        if (searchAdd) {
+            jugadoresDisponibles = jugadoresDisponibles.filter(j => 
+                j.nombre.toLowerCase().includes(searchAdd)
+            );
+        }
+        
+        const containerAdd = document.getElementById("addSubstitutesList");
+        if (jugadoresDisponibles.length === 0) {
+            containerAdd.innerHTML = `<div style="text-align: center; padding: 10px; color: #999; font-size: 0.85rem;">
+                ${sustitutosActuales.length >= 10 ? "⚠️ Límite de 10 sustitutos alcanzado" : "No hay jugadores disponibles"}
+            </div>`;
+        } else {
+            containerAdd.innerHTML = jugadoresDisponibles.map(j => `
+                <div class="player-card" style="justify-content: space-between;">
+                    <span class="player-name">${j.nombre}</span>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span class="player-power">${j.poder}</span>
+                        <button class="btn" style="padding: 4px 8px; font-size: 0.7rem; background: linear-gradient(135deg, #f0a500, #e08900); color: #0a0f1c; border: none;" onclick="agregarSustitutoDesdeNombre('${j.nombre.replace(/'/g, "\\'")}')" title="Agregar como sustituto">+</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+        
+        // Sección de sustitutos asignados
+        const containerAssigned = document.getElementById("substitutesList");
+        const sustitutos = asignacionesSustitutos.sustitutos || [];
+        
+        if (sustitutos.length === 0) {
+            containerAssigned.innerHTML = `<div style="text-align: center; padding: 20px; color: #999;">Sin sustitutos asignados</div>`;
+            return;
+        }
+        
+        containerAssigned.innerHTML = sustitutos.map((s, idx) => `
+            <div class="player-card" style="justify-content: space-between;">
+                <span class="player-name">${s.nombre}</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <span class="player-power">${s.poder}</span>
+                    <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.7rem;" onclick="eliminarSustituto(${idx})">✕</button>
+                </div>
+            </div>
+        `).join("");
+    }
+
+    function mostrarTab(tabName) {
+        const windowWidth = window.innerWidth;
+        
+        if (windowWidth > 1024) {
+            // Desktop: ambos sidebars visibles
+            return;
+        }
+        
+        // Tablet/Mobile: tabs funcionales
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        
+        document.getElementById('sidebarTitulares').classList.remove('open');
+        document.getElementById('sidebarSustitutos').classList.remove('open');
+        
+        if (tabName === 'titulares') {
+            document.getElementById('sidebarTitulares').classList.add('open');
+        } else {
+            document.getElementById('sidebarSustitutos').classList.add('open');
+        }
+    }
+
+    function abrirSidebarSustitutos() {
+        const windowWidth = window.innerWidth;
+        if (windowWidth > 1024) {
+            // En desktop, mostrar sidebar de sustitutos directamente
+            actualizarListaSustitutos();
+        } else {
+            // En mobile/tablet, cambiar tab
+            mostrarTab('sustitutos');
+            actualizarListaSustitutos();
+        }
+    }
+
+    function eliminarSustituto(indice) {
+        asignacionesSustitutos.sustitutos.splice(indice, 1);
+        guardarAsignaciones();
+        actualizarListaSustitutos();
+        mostrarToast("🗑️ Sustituto eliminado");
+    }
+
+    function agregarSustitutoDesdeNombre(nombre) {
+        if (asignacionesSustitutos.sustitutos.length >= 10) {
+            mostrarToast("⚠️ Máximo 10 sustitutos");
+            return false;
+        }
+        
+        // Buscar el jugador en la lista completa
+        const jugador = jugadores.find(j => j.nombre === nombre);
+        if (!jugador) {
+            mostrarToast("❌ Jugador no encontrado");
+            return false;
+        }
+        
+        // Validar que no sea duplicado
+        if (asignacionesSustitutos.sustitutos.some(s => s.nombre === jugador.nombre)) {
+            mostrarToast("⚠️ Sustituto ya existe");
+            return false;
+        }
+        
+        asignacionesSustitutos.sustitutos.push(jugador);
+        guardarAsignaciones();
+        actualizarListaSustitutos();
+        mostrarToast("✅ Sustituto agregado");
+        return true;
+    }
     
     function init() {
         cargarAsignaciones();
         renderizarMapa();
         
-        // Listener para redimensionamiento de ventana
-        window.addEventListener("resize", () => {
-            renderizarMapa();
-        });
-        
         document.getElementById("showPlayersBtn").onclick = mostrarSidebar;
-        document.getElementById("closeSidebar").onclick = () => document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("closeSidebar").onclick = () => document.getElementById("sidebarTitulares").classList.remove("open");
+        document.getElementById("closeSidebarSustitutos").onclick = () => document.getElementById("sidebarSustitutos").classList.remove("open");
         document.getElementById("closeModal").onclick = () => document.getElementById("modal").style.display = "none";
         document.getElementById("exportBtn").onclick = exportarImagen;
         document.getElementById("resetBtn").onclick = resetearAsignaciones;
         document.getElementById("filterStatus").onchange = () => {
-            if (document.getElementById("sidebar").classList.contains("open")) actualizarListaJugadores();
+            if (document.getElementById("sidebarTitulares").classList.contains("open")) actualizarListaJugadores();
         };
         document.getElementById("playerSearch").oninput = actualizarListaJugadores;
+        document.getElementById("addSubstitutesSearch").oninput = actualizarListaSustitutos;
+        document.getElementById("modalSearch").oninput = () => {
+            const asignadosActuales = new Set(asignaciones[modalEstructuraActual] || []);
+            renderizarModalJugadores(asignadosActuales);
+        };
+        
+        // Event listeners para tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                mostrarTab(btn.dataset.tab);
+                if (btn.dataset.tab === 'sustitutos') {
+                    actualizarListaSustitutos();
+                } else {
+                    actualizarListaJugadores();
+                }
+            };
+        });
         
         document.getElementById("modal").onclick = (e) => {
             if (e.target === document.getElementById("modal")) {
                 document.getElementById("modal").style.display = "none";
             }
         };
+        
+        // Listener para redimensionamiento de ventana
+        window.addEventListener("resize", () => {
+            renderizarMapa();
+            const windowWidth = window.innerWidth;
+            if (windowWidth > 1024) {
+                document.getElementById('tabsHeader').style.display = 'none';
+                document.getElementById('sidebarTitulares').style.right = 'auto';
+                document.getElementById('sidebarSustitutos').style.left = 'auto';
+            } else {
+                document.getElementById('tabsHeader').style.display = 'flex';
+            }
+        });
     }
     
     init();
