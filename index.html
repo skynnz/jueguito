@@ -160,6 +160,8 @@
             width: 100%;
             border-radius: 24px;
             overflow: hidden;
+            container-type: inline-size;
+            container-name: map;
         }
 
         .map-container img {
@@ -169,11 +171,22 @@
             pointer-events: none;
         }
 
+        #structuresOverlay {
+            /* 2. Aseguramos que el overlay cubra exactamente el mapa */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
         /* Estructuras - círculos elegantes */
         .structure {
             position: absolute;
-            width: clamp(30px, 8vw, 70px);
-            height: clamp(30px, 8vw, 70px);
+            width: clamp(16px, 7.5cqw, 60px);
+            height: clamp(16px, 7.5cqw, 60px);
             background: radial-gradient(circle, rgba(240, 165, 0, 0.9), rgba(200, 120, 0, 0.85));
             border: 2px solid #ffdd99;
             border-radius: 50%;
@@ -182,23 +195,27 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            font-size: clamp(5px, 1.8vw, 10px);
+            font-size: clamp(6px, 1.8cqw, 14px);
             font-weight: 800;
             color: #1a1f2e;
             backdrop-filter: blur(4px);
             transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             box-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,220,100,0.3);
-            z-index: 10;
+            z-index: 20;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             line-height: 1.2;
+            pointer-events: auto;
         }
+
         .structure:hover {
             transform: translate(-50%, -50%) scale(1.12);
             background: radial-gradient(circle, #ffcc44, #f0a500);
             box-shadow: 0 8px 20px rgba(240, 165, 0, 0.6);
             border-color: #fff0cc;
         }
+
+        
 
         /* Líneas conectoras SVG */
         #linesOverlay {
@@ -217,23 +234,37 @@
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
             color: #ffdd99;
-            font-size: clamp(6px, 1.5vw, 9px);
+            font-size: clamp(5px, 1.2cqw, 10px);
             font-weight: 600;
-            border-radius: 8px;
-            padding: clamp(3px, 1vw, 6px);
+            border-radius: 0.5cqw;
+            padding: 0.25cqw 0.5cqw;
             white-space: normal;
-            word-break: break-word;
-            max-width: clamp(90px, 30vw, 160px);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            max-width: 14cqw;
+            width: auto;
+            min-width: 30px;
             border: 1px solid rgba(240, 165, 0, 0.2);
             pointer-events: none;
             z-index: 25;
             font-family: monospace;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.1px;
             box-shadow: none;
             line-height: 1.2;
             display: flex;
+            flex-wrap: wrap;
+            /* grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); */
             flex-direction: column;
-            gap: 1px;
+            gap: 4px;
+        }
+
+        .assigned-names span {
+            background: rgba(255, 255, 255, 0.1); /* Fondo sutil */
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
         }
 
         /* Tabs header */
@@ -501,12 +532,13 @@
             .player-power { font-size: 0.7rem; }
             .tabs-header { display: flex; }
             .assigned-names {
-                font-size: 5px !important;
-                padding: 2px 3px !important;
-                max-width: 75px !important;
-                border-radius: 4px !important;
-                line-height: 1.1 !important;
-                gap: 0px !important;
+                font-size: clamp(4px, 1.1cqw, 8px) !important;
+                padding: 0.2cqw 0.4cqw !important;
+                max-width: 12cqw !important;
+                border-radius: 0.4cqw !important;
+                line-height: 1.2 !important;
+                gap: 0.5px !important;
+                min-width: 25px !important;
             }
         }
     </style>
@@ -684,12 +716,10 @@
                 
                 nombresVisibles.forEach(nombre => {
                     const nombreSpan = document.createElement("span");
-                    nombreSpan.textContent = nombre.split(' ')[0];
-                    nombreSpan.style.fontSize = "9px";
-                    nombreSpan.style.overflow = "hidden";
-                    nombreSpan.style.textOverflow = "ellipsis";
-                    nombreSpan.style.whiteSpace = "nowrap";
-                    nombreSpan.style.maxWidth = "95px";
+                    nombreSpan.textContent = nombre;
+                    nombreSpan.style.fontSize = "inherit";
+                    nombreSpan.style.wordBreak = "break-word";
+                    nombreSpan.style.overflowWrap = "break-word";
                     nombreSpan.title = nombre;
                     namesDiv.appendChild(nombreSpan);
                 });
