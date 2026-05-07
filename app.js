@@ -21,7 +21,24 @@
 
     let jugadores = [];
 
-    function cargarJugadores() {
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx5Wlzv8SlfhKginO4qNRNRLkGLlReZLMJBvwkXXCuc6NbIIxjN-4ZbQlMSHDd8cJ8fzw/exec";
+
+    async function cargarJugadores() {
+        try {
+            const response = await fetch(GOOGLE_SHEET_URL);
+            if (response.ok) {
+                const data = await response.json();
+                if (data && Array.isArray(data) && data.length > 0) {
+                    jugadores = data;
+                    localStorage.setItem("tormenta_jugadores", JSON.stringify(jugadores));
+                    return;
+                }
+            }
+        } catch (err) {
+            console.warn("No se pudo cargar desde Google Sheets, usando local", err);
+        }
+
+        // Fallback a localStorage o datos por defecto si falla o está vacío
         const guardado = localStorage.getItem("tormenta_jugadores");
         if (guardado) {
             jugadores = JSON.parse(guardado);
@@ -34,8 +51,23 @@
         }
     }
 
-    function guardarJugadores() {
+    async function guardarJugadores() {
+        // Guardado local inmediato
         localStorage.setItem("tormenta_jugadores", JSON.stringify(jugadores));
+        
+        // Guardado en la nube en segundo plano
+        try {
+            await fetch(GOOGLE_SHEET_URL, {
+                method: 'POST',
+                body: JSON.stringify({ jugadores: jugadores }),
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                }
+            });
+        } catch(err) {
+            console.error("Error guardando en Google Sheets", err);
+            mostrarToast("⚠️ Error guardando en la nube, se guardó localmente.");
+        }
     }
 
     // Array vacío para sustitutos (usuario los asignará después)
@@ -494,8 +526,9 @@
         return true;
     }
     
-    function init() {
-        cargarJugadores();
+    async function init() {
+        mostrarToast("⏳ Conectando con base de datos...");
+        await cargarJugadores();
         cargarAsignaciones();
         renderizarMapa();
         
