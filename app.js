@@ -1,21 +1,22 @@
 // ==================== DATOS DE JUGADORES Y SUSTITUTOS ====================
     const jugadoresRaw = [
-        "gabiota30,98.1M", "Jay Dennise,120.8M", "enoc2,118.6M", "Dasstas,110.2M", "eqqui7,106.8M",
-        "Kandi1619,103.1M", "bobafitness,100.5M", "AugustoAlonzo,99.6M", "BrebisGaleuse,95.5M", "Alaroña19,89.9M",
-        "Jos rv,81.0M", "Berenice3,103.2M", "RVU81,106.8M", "Bozoow,107.5M", "Celso Leao,115.0M",
-        "Rick TW,145.0M", "Mylinh84,69.8M", "Wendler Gilson,72.8M", "hardiness,73.5M", "whitebeardX,76.2M",
-        "Dayane Prado,80.0M", "GaspoCABJ,81.1M", "Barone 1,81.1M", "Asap Owen,82.5M", "oFantasma,82.5M",
-        "IIProdigyII,85.8M", "Diano Xau,87.1M", "Igor123ja,87.5M", "Mayaneitor3000,88.3M", "Andres Ec,91.6M",
-        "Coquita de vidrio,92.6M", "Doom74,93.4M", "wismerhill51,95.2M", "KahScalzer,96.5M", "melaisa,51.8M",
-        "Zurdoll,63.5M", "Omegazero86,64.6M", "Screamdemi,69.1M", "Flash Martins 1,69.7M", "oshynfood,70.7M",
-        "Milkya1,70.7M", "Gara333,73.9M", "Rikko13,82.4M", "WilliamRod,82.6M", "blizter03,85.8M",
-        "OsvaldRJ,85.9M", "HalyssonG,86.3M", "johnny9555,86.7M", "Zabelier,94.5M", "Geraldo Peixoto,47.5M",
-        "JoMps,61.1M", "Suda0312,62.3M", "theking1129,62.8M", "Thenry Henry,63.1M", "Daemmonn,64.1M",
+        "gabiota30,98.1M", "Jay Dennise,120.8M", "Dasstas,110.2M", "eqqui7,106.8M",
+        "Kandi1619,103.1M", "bobafitness,100.5M", "AugustoAlonzo,99.6M", "BrebisGaleuse,95.5M",
+        "Jos rv,81.0M", "Berenice3,103.2M", "Mylinh84,69.8M", "hardiness,73.5M","GaspoCABJ,81.1M", "Barone 1,81.1M", "Asap Owen,82.5M",
+        "IIProdigyII,85.8M",
+        "Coquita de vidrio,92.6M", "Doom74,93.4M","melaisa,51.8M",
+        "Zurdoll,63.5M", "Omegazero86,64.6M", "Screamdemi,69.1M", "oshynfood,70.7M",
+        "Milkya1,70.7M", "Gara333,73.9M", "WilliamRod,82.6M",
+        "OsvaldRJ,85.9M", "HalyssonG,86.3M", "Zabelier,94.5M", "Geraldo Peixoto,47.5M",
+        "JoMps,61.1M", "Suda0312,62.3M", "theking1129,62.8M", "Daemmonn,64.1M",
         "obed117,66.4M", "Homer Squad,68.2M", "Cax3,70.7M", "David9319,72.8M", "Seawhite,83.2M",
         "Hal9mil,87.4M", "Harlequimm,88.2M", "Evg3nia,88.3M", "dogeviper999,92.6M", "kone33,45.1M",
         "peñarol 1989,52.1M", "TepssGames,54.7M", "NandoGomez,58.3M", "Vartz,58.9M", "Crowell Smart,59.6M",
         "Mar Almaraz,60.6M", "cordoba3389,60.8M", "Deoxys07,62.4M", "Carmela Soprano,62.9M", "Davidmdo,63.4M",
-        "cicario33,75.7M", "CarLos1998,78.5M", "Odet3,38.3M", "foureagle32,63.1M", "Verooh,64.9M"
+        "cicario33,75.7M", "CarLos1998,78.5M", "foureagle32,63.1M", "Verooh,64.9M","KyrianCO,76.1M","Nestor62,114.1M","Rio GrandeRR,55.7M","Landruya,92.7M",
+        "Gucho Kast,40.0M", "ING Alonso,56.8M", "Mbac,15.5M", "Lifebloom,62.0M", "Lance HQ3,9.6M", "mammeta17,48.1M","Ivanvedia,66.7M", "Tiaguin007,44.2M",
+        "Spanky Johnson,57.3M", "Zafiro25,35.5M", "76uli,68.4M", "alfies94,46.0M", "Beaniewean,31.4M", "Guillermo xD,63.7M", "Doctor Lu,39.8M",
+        "Sergio Maldonado,22.0M", "lovelylady93,59.4M", "CUT THE SHIT,42.9M"
     ];
 
     let jugadores = [];
